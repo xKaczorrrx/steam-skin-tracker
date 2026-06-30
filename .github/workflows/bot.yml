@@ -3,6 +3,8 @@ name: Steam Bot
 on:
   schedule:
     - cron: "*/5 * * * *"
+  push:
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -18,7 +20,7 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install requests
         run: pip install requests
 
       - name: Run bot
