@@ -1,0 +1,10 @@
+{
+  "discord_webhook": "WSTAW_TUTAJ_WEBHOOK",
+  "items": [
+    {
+      "name": "AK-47 Redline",
+      "url_name": "AK-47 Redline Field-Tested",
+      "price_limit": 450
+    }
+  ]
+}
