@@ -1,58 +1,64 @@
-import json
 import requests
+import urllib.parse
 
-with open("config.json", "r", encoding="utf-8") as f:
-    config = json.load(f)
+DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1521552130920681564/SZd5mTBSMWum4q5rWD3OdXzOPVaTu2lCLtQpx_vXeFpa3qsVt1Q57kWc6jtzwRfxwzU7"
 
-def send(msg):
-    requests.post(config["discord_webhook"], json={"content": msg})
-
-def get_price(item_name):
-    url = f"https://steamcommunity.com/market/priceoverview/?appid=730&currency=6&market_hash_name={item_name}"
-
-    try:
-        r = requests.get(url, timeout=10)
-        data = r.json()
-    except:
-        return None
-
-    if not data.get("success"):
-        return None
-
-    price = data.get("lowest_price")
-    if not price:
-        return None
-
-    price = (
-        price.replace("zł", "")
-        .replace("$", "")
-        .replace(",", ".")
-        .strip()
-    )
-
-    try:
-        return float(price)
-    except:
-        return None
+items = [
+    {
+        "name": "AK-47 Redline",
+        "url_name": "AK-47 | Redline (Field-Tested)",
+        "price_limit": 160
+    },
+    {
+        "name": "USP-S | Cyrex",
+        "url_name": "USP-S | Cyrex (Minimal Wear)",
+        "price_limit": 63
+    },
+    {
+        "name": "P90 | Reef Grief",
+        "url_name": "P90 | Reef Grief (Factory New)",
+        "price_limit": 10
+    }
+]
 
 
-for item in config["items"]:
-    name = item["url_name"]
-    limit = item["price_limit"]
+def get_price(market_name):
+    url_name = urllib.parse.quote(market_name, safe="")
 
-    price = get_price(name)
+    url = f"https://steamcommunity.com/market/priceoverview/?appid=730&currency=6&market_hash_name={url_name}"
 
-    if price is None:
-        send(f"STEAM: {name} = ❌ brak danych")
-        continue
+    r = requests.get(url, timeout=10)
+    data = r.json()
 
-    # 🔔 PROG
-    if price >= limit:
-        send(
-            f"🚨 PROG PRZEKROCZONY!\n"
-            f"{name}\n"
-            f"💰 {price} zł\n"
-            f"🎯 próg: {limit} zł"
-        )
+    print("RAW:", data)
+
+    if data.get("success") and data.get("lowest_price"):
+        price_str = data["lowest_price"].replace("zł", "").replace(",", ".").strip()
+        return float(price_str)
     else:
-        print(f"{name}: {price} zł (poniżej progu)")
+        return None
+
+
+def send_discord(name, price, limit):
+    msg = {
+        "content": f"🚨 PROG PRZEKROCZONY!\n{name}\n💰 {price} zł\n🎯 próg: {limit} zł"
+    }
+    requests.post(DISCORD_WEBHOOK, json=msg)
+
+
+def main():
+    for item in items:
+        price = get_price(item["url_name"])
+
+        if price is None:
+            print(f"{item['name']} = ❌ brak danych")
+            continue
+
+        print(f"{item['name']} = {price} zł")
+
+        if price <= item["price_limit"]:
+            send_discord(item["name"], price, item["price_limit"])
+
+
+if __name__ == "__main__":
+    main()
