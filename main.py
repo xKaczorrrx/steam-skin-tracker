@@ -38,9 +38,21 @@ def get_price(item_name):
 
 for item in config["items"]:
     name = item["url_name"]
+    limit = item["price_limit"]
+
     price = get_price(name)
 
     if price is None:
-        send(f"STEAM: {name} = ❌ brak danych (None)")
+        send(f"STEAM: {name} = ❌ brak danych")
+        continue
+
+    # 🔔 PROG
+    if price >= limit:
+        send(
+            f"🚨 PROG PRZEKROCZONY!\n"
+            f"{name}\n"
+            f"💰 {price} zł\n"
+            f"🎯 próg: {limit} zł"
+        )
     else:
-        send(f"STEAM: {name} = {price}")
+        print(f"{name}: {price} zł (poniżej progu)")
