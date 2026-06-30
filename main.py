@@ -5,7 +5,7 @@ import urllib.parse
 with open("config.json", "r") as f:
     config = json.load(f)
 
-WEBHOOK = config[discord_webhook]
+WEBHOOK = config["discord_webhook"]
 
 def get_price(name):
     url = f"https://steamcommunity.com/market/priceoverview/?currency=6&appid=730&market_hash_name={urllib.parse.quote(name)}"
