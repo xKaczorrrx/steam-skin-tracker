@@ -27,15 +27,34 @@ def get_price(market_name):
 
     url = f"https://steamcommunity.com/market/priceoverview/?appid=730&currency=6&market_hash_name={url_name}"
 
-    r = requests.get(url, timeout=10)
-    data = r.json()
+    try:
+        r = requests.get(
+            url,
+            timeout=10,
+            headers={"User-Agent": "Mozilla/5.0"}
+        )
+        data = r.json()
+    except Exception as e:
+        print("ERROR:", e)
+        return None
 
     print("RAW:", data)
 
-    if data.get("success") and data.get("lowest_price"):
-        price_str = data["lowest_price"].replace("zł", "").replace(",", ".").strip()
-        return float(price_str)
-    else:
+    if not data.get("success") or not data.get("lowest_price"):
+        return None
+
+    price = data["lowest_price"]
+
+    price = (
+        price.replace("zł", "")
+        .replace("$", "")
+        .replace(",", ".")
+        .strip()
+    )
+
+    try:
+        return float(price)
+    except:
         return None
 
 
@@ -56,6 +75,7 @@ def main():
 
         print(f"{item['name']} = {price} zł")
 
+        # 🔥 POPRAWIONA LOGIKA (OKAZJE)
         if price <= item["price_limit"]:
             send_discord(item["name"], price, item["price_limit"])
 
