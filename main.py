@@ -76,7 +76,7 @@ def main():
         print(f"{item['name']} = {price} zł")
 
         # 🔥 POPRAWIONA LOGIKA (OKAZJE)
-        if price <= item["price_limit"]:
+       if price >= item["price_limit"]:
             send_discord(item["name"], price, item["price_limit"])
 
 
