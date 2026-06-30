@@ -1,7 +1,7 @@
 import requests
 import urllib.parse
 
-DISCORD_WEBHOOK = "https://discord.com/api/webhooks/1521552130920681564/SZd5mTBSMWum4q5rWD3OdXzOPVaTu2lCLtQpx_vXeFpa3qsVt1Q57kWc6jtzwRfxwzU7"
+DISCORD_WEBHOOK = "WSTAW_TUTAJ_SWÓJ_WEBHOOK"
 
 items = [
     {
@@ -75,7 +75,6 @@ def main():
 
         print(f"{item['name']} = {price} zł")
 
-        # 🔥 ALERT GDY CENA >= PROG
         if price >= item["price_limit"]:
             send_discord(item["name"], price, item["price_limit"])
 
