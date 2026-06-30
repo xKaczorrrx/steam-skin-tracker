@@ -6,5 +6,15 @@
       "url_name": "AK-47 | Redline (Field-Tested)",
       "price_limit": 160
     }
+     {
+      "name": "USP-S | Cyrex",
+      "url_name": "USP-S | Cyrex (Minimal-Wear)",
+      "price_limit": 63
+    }
+     {
+      "name": "P90 | Reef Grief",
+      "url_name": "P90 | Reef Grief (Factory New)",
+      "price_limit": 10
+    }
   ]
 }
